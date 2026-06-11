@@ -1,0 +1,5 @@
+METER_TO_FEET = 3.28084
+METER_TO_YARD = 1.09361
+ROUND_DECIMALS = 1
+
+SUPPORTED_UNITS = ("meter", "feet", "yard")

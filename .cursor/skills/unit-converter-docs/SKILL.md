@@ -39,7 +39,7 @@ Report·Checklist 에 Track/BCE·Dual Track 진행 상태를 기록한다.
 | Mom Test | `MomTest` |
 | PRD | `PRD` |
 | TDD·ARRR·커맨드 | `TDD_ARRR` |
-| Golden Master | `Golden_Master` |
+| Golden Master (Approval Test) | `Golden_Master` |
 
 파일명: `04_TDD_ARRR_Report.md`
 

@@ -35,7 +35,7 @@ SSOT: `.cursorrules`, `docs/PRD.md`.
 | Arrange | `/red-skeleton` | logic \| ui |
 | Red | `/tdd-red` | logic \| ui |
 | Green | `/green-minimal` | logic \| ui |
-| Green | `/golden-master` | logic + ui (Boundary↔Control) |
+| Green | `/golden-master` | Logic (Layer: entity) — Approval Test |
 | Refactor | `/refactor-smell` | logic \| ui |
 | Refactor | `/refactor-safe` | logic \| ui |
 | Report | `/export` | — |
@@ -45,10 +45,34 @@ SSOT: `.cursorrules`, `docs/PRD.md`.
 ```
 Phase: red | Target: {convert|main} | Track: {logic|ui} | BCE: {Entity|Control|Boundary}
 Phase: green | Target: {convert|main} | Track: {logic|ui} | BCE: {Entity|Control|Boundary}
+Phase: green | Layer: entity | Track: Logic          # /golden-master 전용
 Phase: refactor | Target: {convert|main} | Track: {logic|ui} | BCE: {Entity|Control|Boundary}
 ```
 
 `[RED]` / `[GREEN]` / `[REFACTOR]` 접두어 병행.
+
+## Golden Master (Approval Test)
+
+`/green-minimal` 로 대상 Test ID **PASS** 후 `/golden-master` 실행. Logic Track · Layer **entity** · Test ID 1건.
+
+| 항목 | 내용 |
+|------|------|
+| 헬퍼 | `tests/_approval.py` — `assert_matches_golden` (없으면 생성) |
+| golden | `tests/golden/{id}.approved.txt` (Test ID 1:1) |
+| 기준 생성 | `UPDATE_GOLDEN=1 python -m pytest tests/test_convert.py::{test} -v` |
+| matched | `UPDATE_GOLDEN` 없이 동일 pytest → PASS |
+
+**int[6] 1-index** (고정 직렬화 — 줄 1~6):
+
+| 줄 | pass | fail |
+|----|------|------|
+| 1 | `status` | `status` |
+| 2~4 | `lines[0..2]` | 빈 줄 |
+| 5 | 빈 줄 | `E001` format · `E002` number · `E003` unit · `E004` negative · `E005` 기타 |
+| 6 | 빈 줄 | `error.message` (PRD §3) |
+
+- golden **수동 편집**으로 통과 우회 금지 — 기준은 `UPDATE_GOLDEN=1` + 구현 출력만.
+- 변경: `tests/_approval.py`, `tests/golden/`, `tests/test_convert.py` (golden 연결). `src/`·`UnitConverter.py` **금지**.
 
 ## Control 계약 (`.cursorrules`)
 
@@ -82,10 +106,10 @@ def test_main_xxx(capsys):
 
 ## 단계별 금지
 
-| Track | RED 금지 | GREEN 금지 |
-|-------|----------|------------|
-| logic | `src/` 수정 | `tests/` 수정 |
-| ui | `UnitConverter.py` 수정 | `tests/` 수정 |
+| Track | RED 금지 | GREEN (`/green-minimal`) | GREEN (`/golden-master`) |
+|-------|----------|--------------------------|---------------------------|
+| logic | `src/` 수정 | `tests/` 수정 | `src/` 수정 — `tests/` Approval Test만 |
+| ui | `UnitConverter.py` 수정 | `tests/` 수정 | *(Logic 전용 — UI 미적용)* |
 
 Boundary에 Control 로직 금지. Control에 print 금지.
 

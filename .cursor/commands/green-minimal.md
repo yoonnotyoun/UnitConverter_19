@@ -32,6 +32,7 @@ Phase: green | Target: {convert|main} | Track: {logic|ui} | BCE: {Entity|Control
 - 변경 파일: Track 별 1개 (`src/` 또는 `UnitConverter.py`)
 
 ## 금지
+- 하드코딩·매직넘버 금지 → constants.py SSOT
 - `tests/` 수정
 - Boundary 에 변환·검증 로직 (→ Control)
 - 양 Track·다중 TC 한꺼번에
