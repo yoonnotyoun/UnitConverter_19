@@ -9,6 +9,8 @@ from _approval import assert_matches_golden, serialize_convert_result
 from convert import convert
 
 GOLDEN_T_FR_01 = Path(__file__).parent / "golden" / "T-FR-01.approved.txt"
+GOLDEN_T_FR_02 = Path(__file__).parent / "golden" / "T-FR-02.approved.txt"
+GOLDEN_T_FR_03 = Path(__file__).parent / "golden" / "T-FR-03.approved.txt"
 
 # PRD §8 기본(B) — B4 기대값 (비율 3.28084 / 1.09361, README 반올림)
 B4_EXPECTED = {
@@ -42,8 +44,10 @@ def test_b2_feet_input_returns_pass():
     result = convert(input_str)
 
     # Assert
-    # TODO: status=pass, lines == B4_EXPECTED["feet:8.2"]
-    pytest.fail("RED skeleton: B2 — feet pass TC 미구현")
+    assert result["status"] == "pass"
+    assert result["error"] is None
+    assert result["lines"] == B4_EXPECTED["feet:8.2"]
+    assert_matches_golden(serialize_convert_result(result), GOLDEN_T_FR_02)
 
 
 def test_b2_yard_input_returns_pass():
@@ -55,8 +59,10 @@ def test_b2_yard_input_returns_pass():
     result = convert(input_str)
 
     # Assert
-    # TODO: status=pass, lines == B4_EXPECTED["yard:2.7"]
-    pytest.fail("RED skeleton: B2 — yard pass TC 미구현")
+    assert result["status"] == "pass"
+    assert result["error"] is None
+    assert result["lines"] == B4_EXPECTED["yard:2.7"]
+    assert_matches_golden(serialize_convert_result(result), GOLDEN_T_FR_03)
 
 
 def test_b3_extension_preserves_existing_meter_tc():
