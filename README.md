@@ -97,16 +97,16 @@ deactivate
 
 > `tests/test_convert.py` RED 먼저 → `src/convert.py` GREEN. **케이스마다 RED 완료 후 GREEN.**
 
-| FR | Arrange·Red | Green | Refactor |
-|----|-------------|-------|----------|
-| FR-01 | [ ] `/red-test-plan` → `/tdd-red` `meter:2.5` pass | [ ] `/green-minimal` | [ ] `/refactor-safe` (필요 시) |
-| FR-02 | [ ] `/tdd-red` 3단위·`lines` (feet/yard 입력) | [ ] `/green-minimal` | [ ] |
-| FR-03 | [ ] `/tdd-red` 미지원 단위 fail | [ ] `/green-minimal` | [ ] |
-| FR-04 | [ ] `/tdd-red` 음수 fail | [ ] `/green-minimal` | [ ] |
-| FR-05 | [ ] `/tdd-red` 형식·숫자 fail | [ ] `/green-minimal` | [ ] |
+| FR | Arrange·Red | Green | Golden | Refactor |
+|----|-------------|-------|--------|----------|
+| FR-01 | [x] `test_fr_01_meter_2_5_returns_pass` | [x] meter 분기 | [x] T-FR-01 | [ ] |
+| FR-02 | [x] `test_fr_02_feet_8_2_*`, `test_fr_02_yard_2_7_*` | [x] feet·yard 분기 | [x] T-FR-02, T-FR-02-YARD | [ ] |
+| FR-03 | [x] `test_fr_03_meters_*`, `test_fr_03_cubit_*` | [x] unit 검증 | [x] T-FR-03, T-FR-03-CUBIT | [ ] |
+| FR-04 | [x] `test_fr_04_meter_*`, `test_fr_04_feet_*` | [x] negative 검증 | [x] T-FR-04, T-FR-04-FEET | [ ] |
+| FR-05 | [x] `test_fr_05_format_*`, `test_fr_05_number_*` | [x] format·number 검증 | [x] T-FR-05-FORMAT, T-FR-05-NUMBER | [ ] |
 
-- [ ] Logic Track 전 FR **RED → GREEN** 완료 (PRD §7)
-- [ ] `/golden-master` — Boundary 레거시 vs `convert()` 갭 정리
+- [x] Logic Track 전 FR **RED → GREEN** 완료 (PRD §7) — `pytest tests/test_convert.py` **9 passed**
+- [x] `/golden-master` — pass 3 + fail 6건 int[6] Approval (yard golden `T-FR-02-YARD`로 명칭 정리)
 - [ ] NFR-01 OCP · NFR-02 SRP — `/refactor-smell` → `/refactor-safe`
 
 ---
@@ -134,8 +134,9 @@ deactivate
 
 ### 5. 회고 및 발표 (1시간)
 
-- [x] Cursor Export (`Report/04_*`, `Prompting/04_*`)
-- [ ] `/golden-master` 갭 해소 여부 최종 점검
+- [x] Cursor Export (`Report/04_*` ~ `08_*`, `Prompting/04_*` ~ `08_*`)
+- [x] Logic Track Golden Approval — FR-01~FR-05 전 TC matched
+- [ ] UI Track (`tests/test_main.py`) — Logic GREEN 후 시작
 - [ ] 실습 목표·달성도·AI·TC·리팩터링 회고 및 발표
 
 ---

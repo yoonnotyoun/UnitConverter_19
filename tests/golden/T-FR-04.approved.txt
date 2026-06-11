@@ -1,0 +1,6 @@
+fail
+
+
+
+E004
+Negative value not allowed: -1
