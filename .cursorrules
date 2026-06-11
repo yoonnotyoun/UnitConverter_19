@@ -1,0 +1,60 @@
+# UnitConverter_19 — Cursor Rules
+
+## 도메인
+- 문자열 기반 단위 변환기. 입력 형식: `unit:value` (예: `meter:2.5`).
+- 지원 단위: meter, feet, yard (3종만. 임의 추가 금지).
+- 변환 비율 (meter 기준):
+  - 1 meter = 3.28084 feet
+  - 1 meter = 1.09361 yard
+
+## API 계약 — `convert(input_str: str) -> dict`
+```python
+{
+    "status": "pass" | "fail",
+    "lines": list[str],
+    "error": dict | None
+}
+```
+
+### 성공 (`status="pass"`)
+- `lines`에 meter·feet·yard 변환 결과 **3줄** 저장.
+  - 형식: `"{value} {unit} = {converted} {target_unit}"` (기존 `UnitConverter.py` 출력과 동일).
+- `error=None`.
+
+### 실패 (`status="fail"`)
+- `lines=[]`.
+- `error`에 오류 정보 저장 (키·메시지는 테스트와 일치시킬 것).
+
+### 에러 조건 (3가지만)
+1. **잘못된 형식** — `:` 누락, `unit`/`value` 분리 불가, `float(value_str)` 불가 등
+2. **음수** — 변환 값이 0 미만 (`value < 0`)
+3. **없는 단위** — meter/feet/yard 외 단위
+
+## 코드 구조
+- `main()`: `input()` / `print()` 등 입·출력만 담당. 변환·검증 로직 금지.
+- `convert()`: 모든 변환·검증 로직. **`print` 호출 금지** — 반환 dict만.
+- 구현 위치: `src/convert.py`. CLI 진입점은 루트 `UnitConverter.py` 또는 동등 역할.
+
+## TDD 사이클 (엄격)
+- **RED → GREEN → REFACTOR** 순서 준수.
+- RED: `tests/`만 수정. 실패하는 테스트 추가.
+- GREEN: 테스트 통과에 필요한 **최소 구현**만. 테스트 수정 금지.
+- REFACTOR: 구조·가독성 개선만. **동작 변경 금지**. 테스트는 계속 통과.
+
+### RED 금지사항
+- `src/`, `UnitConverter.py` 등 **구현 코드** 수정·추가
+- assert 완화, `@pytest.mark.skip`, `@pytest.mark.xfail`, 테스트 삭제·주석 처리
+- 테스트를 통과시키기 위한 기대값·에러 메시지 임의 변경
+- GREEN·REFACTOR 작업 선행 (구현·리팩터·문서화로 RED 대체)
+
+## AI 작업 규칙
+- **한국어**로 응답.
+- TDD 작업 시 응답 **첫 줄**에 Phase 선언: `[RED]`, `[GREEN]`, `[REFACTOR]`.
+- **git commit**은 사용자가 명시적으로 요청할 때만 수행.
+- README·요구사항에 없는 기능·단위·출력 형식 **임의 확장 금지**.
+- 범위 밖 리팩터(OCP/SRP 전면 개편, 설정 외부화 등)는 사용자가 요청하기 전까지 하지 않음.
+
+## 테스트 실행
+```bash
+python -m pytest
+```
