@@ -64,6 +64,82 @@ deactivate
    - JSON / CSV / 표 형태 출력
 
 
+## 진행 계획 (Todo)
+
+> SSOT: `.cursorrules`, `docs/PRD.md` · **Dual Track TDD** (Logic → UI) · **BCE** · **ARRR** (케이스당 RED → GREEN → REFACTOR)
+
+### TDD 진행 원칙
+
+- **케이스 1건씩:** Arrange → Red → Green → Refactor (한 번에 여러 FR 금지)
+- **Logic Track 먼저** (`tests/test_convert.py` → `src/convert.py`), **전 케이스 GREEN 후 UI Track**
+- **커맨드 순서:** `/red-test-plan` → `/tdd-red` → `/green-minimal` → `/refactor-smell` → `/refactor-safe`
+
+| ARRR | 커맨드 | RED/GREEN |
+|------|--------|-----------|
+| Arrange | `/red-test-plan`, `/red-skeleton` | RED 준비 |
+| **Red** | `/tdd-red` | **실패 TC** (`tests/` 만) |
+| **Green** | `/green-minimal` | **최소 구현** (`src/` 또는 `UnitConverter.py`) |
+| Refactor | `/refactor-smell`, `/refactor-safe` | 동작 유지 개선 |
+| Report | `/export`, `/golden-master` | 기록·갭 대조 |
+
+---
+
+### 1. 분석·준비 (0.5시간) — 완료
+
+- [x] 레거시 코드 구조·로직 파악 (`UnitConverter.py`)
+- [x] Mom Test · RGIO · `convert()` 계약 (`Report/01~03_*`)
+- [x] PRD · 추적표 (`docs/PRD.md`)
+- [x] `.cursorrules`, ARRR 커맨드·스킬, pytest 골격
+
+---
+
+### 2. Logic Track — ARRR (Entity · Control)
+
+> `tests/test_convert.py` RED 먼저 → `src/convert.py` GREEN. **케이스마다 RED 완료 후 GREEN.**
+
+| FR | Arrange·Red | Green | Refactor |
+|----|-------------|-------|----------|
+| FR-01 | [ ] `/red-test-plan` → `/tdd-red` `meter:2.5` pass | [ ] `/green-minimal` | [ ] `/refactor-safe` (필요 시) |
+| FR-02 | [ ] `/tdd-red` 3단위·`lines` (feet/yard 입력) | [ ] `/green-minimal` | [ ] |
+| FR-03 | [ ] `/tdd-red` 미지원 단위 fail | [ ] `/green-minimal` | [ ] |
+| FR-04 | [ ] `/tdd-red` 음수 fail | [ ] `/green-minimal` | [ ] |
+| FR-05 | [ ] `/tdd-red` 형식·숫자 fail | [ ] `/green-minimal` | [ ] |
+
+- [ ] Logic Track 전 FR **RED → GREEN** 완료 (PRD §7)
+- [ ] `/golden-master` — Boundary 레거시 vs `convert()` 갭 정리
+- [ ] NFR-01 OCP · NFR-02 SRP — `/refactor-smell` → `/refactor-safe`
+
+---
+
+### 3. UI Track — ARRR (Boundary)
+
+> **Logic Track GREEN 후** 시작. `tests/test_main.py` RED → `UnitConverter.py` `main()` GREEN.
+
+| 케이스 | Arrange·Red | Green | Refactor |
+|--------|-------------|-------|----------|
+| pass 출력 | [ ] `/tdd-red` stdout 변환 줄 | [ ] `/green-minimal` `main()` | [ ] |
+| fail 출력 | [ ] `/tdd-red` 에러 메시지·변환 없음 | [ ] `/green-minimal` | [ ] |
+
+- [ ] Boundary에 변환·검증 로직 없음 (`convert()` 호출·print 만)
+
+---
+
+### 4. 추가 요구사항 (2시간) — P1 · ARRR 동일
+
+- [ ] EXT-01 설정 외부화 — RED → GREEN → REFACTOR
+- [ ] EXT-02 동적 단위 등록 — RED → GREEN → REFACTOR
+- [ ] EXT-03 출력 포맷 — RED → GREEN → REFACTOR
+
+---
+
+### 5. 회고 및 발표 (1시간)
+
+- [x] Cursor Export (`Report/04_*`, `Prompting/04_*`)
+- [ ] `/golden-master` 갭 해소 여부 최종 점검
+- [ ] 실습 목표·달성도·AI·TC·리팩터링 회고 및 발표
+
+---
+
 ## 생성형AI를 활용한 Activities (6 시간)
 
 1. 문제 코드 및 기본 요구사항 분석 (0.5시간)
