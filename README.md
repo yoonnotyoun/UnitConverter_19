@@ -20,6 +20,9 @@ source venv/bin/activate
 # 실행
 python UnitConverter.py
 
+# 테스트 (Logic Track)
+python -m pytest tests/test_convert.py -v
+
 # 가상환경 비활성화
 deactivate
 ```
@@ -97,17 +100,18 @@ deactivate
 
 > `tests/test_convert.py` RED 먼저 → `src/convert.py` GREEN. **케이스마다 RED 완료 후 GREEN.**
 
-| FR | Arrange·Red | Green | Refactor |
-|----|-------------|-------|----------|
-| FR-01 | [ ] `/red-test-plan` → `/tdd-red` `meter:2.5` pass | [ ] `/green-minimal` | [ ] `/refactor-safe` (필요 시) |
-| FR-02 | [ ] `/tdd-red` 3단위·`lines` (feet/yard 입력) | [ ] `/green-minimal` | [ ] |
-| FR-03 | [ ] `/tdd-red` 미지원 단위 fail | [ ] `/green-minimal` | [ ] |
-| FR-04 | [ ] `/tdd-red` 음수 fail | [ ] `/green-minimal` | [ ] |
-| FR-05 | [ ] `/tdd-red` 형식·숫자 fail | [ ] `/green-minimal` | [ ] |
+| FR | Arrange·Red | Green | Golden | Refactor |
+|----|-------------|-------|--------|----------|
+| FR-01 | [x] `test_fr_01_meter_2_5_returns_pass` | [x] meter 분기 | [x] T-FR-01 | [x] `_lines_for_unit` |
+| FR-02 | [x] `test_fr_02_feet_8_2_*`, `test_fr_02_yard_2_7_*` | [x] feet·yard 분기 | [x] T-FR-02, T-FR-02-YARD | [x] `_lines_for_unit` |
+| FR-03 | [x] `test_fr_03_meters_*`, `test_fr_03_cubit_*` | [x] unit 검증 | [x] T-FR-03, T-FR-03-CUBIT | [x] `_fail` |
+| FR-04 | [x] `test_fr_04_meter_*`, `test_fr_04_feet_*` | [x] negative 검증 | [x] T-FR-04, T-FR-04-FEET | [x] `_fail` |
+| FR-05 | [x] `test_fr_05_format_*`, `test_fr_05_number_*` | [x] format·number 검증 | [x] T-FR-05-FORMAT, T-FR-05-NUMBER | [x] `_fail` |
 
-- [ ] Logic Track 전 FR **RED → GREEN** 완료 (PRD §7)
-- [ ] `/golden-master` — Boundary 레거시 vs `convert()` 갭 정리
-- [ ] NFR-01 OCP · NFR-02 SRP — `/refactor-smell` → `/refactor-safe`
+- [x] Logic Track 전 FR **RED → GREEN → REFACTOR** 완료 (PRD §7) — `pytest tests/test_convert.py` **9 passed**
+- [x] `/golden-master` — pass 3 + fail 6건 int[6] Approval (yard golden `T-FR-02-YARD`로 명칭 정리)
+- [x] `/refactor-smell` → `/refactor-safe` (후보 A `_fail`, B `_lines_for_unit`) — golden matched, UPDATE_GOLDEN 없음
+- [ ] NFR-01 OCP · NFR-02 SRP — 클래스·설정 외부화 등 EXT 단계에서 추가 검토
 
 ---
 
@@ -117,10 +121,11 @@ deactivate
 
 | 케이스 | Arrange·Red | Green | Refactor |
 |--------|-------------|-------|----------|
-| pass 출력 | [ ] `/tdd-red` stdout 변환 줄 | [ ] `/green-minimal` `main()` | [ ] |
-| fail 출력 | [ ] `/tdd-red` 에러 메시지·변환 없음 | [ ] `/green-minimal` | [ ] |
+| pass 출력 | [ ] `/tdd-red` stdout 변환 줄 | [x] `main()` → `convert()` 위임 (후보 C) | [ ] |
+| fail 출력 | [ ] `/tdd-red` 에러 메시지·변환 없음 | [x] `error["message"]` print | [ ] |
 
-- [ ] Boundary에 변환·검증 로직 없음 (`convert()` 호출·print 만)
+- [x] Boundary에 변환·검증 로직 없음 — `input()` · `convert()` 호출 · `print` 만 (`UnitConverter.py`)
+- [ ] `tests/test_main.py` RED·Golden — formal UI Track TDD 미착수
 
 ---
 
@@ -134,8 +139,10 @@ deactivate
 
 ### 5. 회고 및 발표 (1시간)
 
-- [x] Cursor Export (`Report/04_*`, `Prompting/04_*`)
-- [ ] `/golden-master` 갭 해소 여부 최종 점검
+- [x] Cursor Export (`Report/04_*` ~ `09_*`, `Prompting/04_*` ~ `09_*`)
+- [x] Logic Track Golden Approval — FR-01~FR-05 전 TC matched
+- [x] Logic Track REFACTOR — `_fail` · `_lines_for_unit` · Boundary `convert()` 위임
+- [ ] UI Track (`tests/test_main.py`) — `main()` 구조 GREEN, formal RED·Golden 미착수
 - [ ] 실습 목표·달성도·AI·TC·리팩터링 회고 및 발표
 
 ---

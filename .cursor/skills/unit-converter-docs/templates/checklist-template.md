@@ -16,7 +16,7 @@
 ### Red · Green · Refactor
 - [ ] `/tdd-red` — Logic 실패 TC 1건
 - [ ] `/green-minimal` — `src/convert.py` 최소 구현
-- [ ] `/golden-master` — Boundary↔Control 갭 (필요 시)
+- [ ] `/golden-master` — Test ID PASS 후 Approval Test (`tests/golden/{id}.approved.txt`, matched 확인)
 - [ ] `/refactor-smell` → `/refactor-safe` — BCE 경계 유지
 
 ---

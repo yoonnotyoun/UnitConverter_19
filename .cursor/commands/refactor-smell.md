@@ -1,32 +1,46 @@
-# REFACTOR Smell — 코드 냄새 진단
+# REFACTOR Smell — 코드 스멜 탐지 (ARRR R⑦)
 
-Dual Track **Logic/UI** · BCE 관점에서 스멜만 진단한다. 수정 없음.
+**역할:** ARRR R단계(Refine ⑦) — 코드 스멜 탐지만, 수정·commit 금지.
 
 ## 필수 선언 (응답 첫 줄)
-Phase: refactor | Target: {convert|main} | Track: {logic|ui} | BCE: {Entity|Control|Boundary}
+Phase: refactor | Scope: src/ tests/ | Track: Logic+UI
 
-## Dual Track · BCE
-| Track | BCE | 진단 대상 | 흔한 스멜 |
-|-------|-----|-----------|-----------|
-| logic | Entity | 단위·비율 | 매직넘버, 하드코딩 단위 |
-| logic | Control | `convert()` | God function, Boundary 로직 혼입 |
-| ui | Boundary | `main()` | 변환·검증 로직, `convert()` 미사용 |
+## 전제
+- `python -m pytest tests/ -v` 전부 PASS 확인. FAIL이면 중단·보고 (GREEN 먼저).
 
 ## 자율 실행
 - 추가 입력·질문 없이 즉시 수행한다.
-- Track·BCE 별 스멜 1~5건을 스스로 나열한다 (SRP·OCP·BCE 경계 위반 우선).
+- `src/`, `UnitConverter.py`, `tests/` 를 Logic+UI · BCE 관점에서 검토한다.
+- 스멜만 나열한다. **코드 수정·commit 금지.**
+
+## 스멜 표
+| 우선순위 | 스멜 | 설명 |
+|----------|------|------|
+| P0 | Long Method | 한 함수·메서드가 과도하게 길어 SRP·가독성 저하 |
+| P0 | Duplicated Code | 동일·유사 로직 반복 |
+| P0 | Mysterious Name | 의도 불명 변수·함수·상수명 |
+| P1 | Magic Number | 의미 없는 리터럴 (비율·단위 등은 상수화 후보) |
+| P1 | ECB 위반 | Entity·Control·Boundary 역할 침범·혼입 |
+| P2 | Feature Envy | 타 객체 데이터를 과도하게 참조하는 메서드 |
+
+## Change Budget (후보 제안 시 준수)
+- 파일 ≤ 3
+- 클래스 ≤ 1
+- 메서드 ≤ 3
 
 ## 절차
-1. `src/convert.py`, `UnitConverter.py` 를 Track·BCE·NFR-01·NFR-02 관점에서 검토한다.
-2. 스멜별 위치·위반 BCE·영향 TC 를 적는다.
-3. `/refactor-safe` 후보를 Track·BCE·우선순위와 함께 제안한다.
+1. pytest 전체 PASS 확인 (FAIL → 중단).
+2. 위 스멜 표 기준으로 P0/P1/P2 분류·위치·영향 TC 기록.
+3. Change Budget 내 `/refactor-safe` 후보 1~3개 제안.
 
-## 보고 형식
-- Track / BCE / 스멜 목록
-- `/refactor-safe` 권고 1건
-- 변경 파일: 없음
+## 출력
+1. **스멜 표** — 우선순위 · 스멜 · 위치(파일·함수) · 영향 TC
+2. **`/refactor-safe` 후보 1~3개** — Track · BCE · 스멜 · Change Budget 적합 여부
+
+## 다음 안내
+- **P0 1개만** 골라 `/refactor-safe` 실행.
 
 ## 금지
-- `tests/`·구현 파일 수정
-- BCE 경계 무시한 대개편만 제안
+- `src/`·`tests/`·`UnitConverter.py` 코드 수정
+- commit
 - 사용자에게 Track·스멜 선택 질문
